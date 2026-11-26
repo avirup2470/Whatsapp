@@ -1,47 +1,48 @@
+```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Web Clone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WhatsApp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #d1d7db;
             margin: 0;
             padding: 0;
             overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Subtle WhatsApp Doodle Background Pattern */
+        /* Authentic WhatsApp Mobile Doodle Background */
         .wa-chat-bg {
             background-color: #efeae2;
-            background-image: radial-gradient(#d4cdc2 1px, transparent 1px), radial-gradient(#d4cdc2 1px, #efeae2 1px);
-            background-size: 32px 32px;
-            background-position: 0 0, 16px 16px;
+            background-image: 
+                radial-gradient(rgba(180, 170, 156, 0.25) 1px, transparent 1px),
+                radial-gradient(rgba(180, 170, 156, 0.25) 1px, #efeae2 1px);
+            background-size: 28px 28px;
+            background-position: 0 0, 14px 14px;
         }
 
         .dark .wa-chat-bg {
             background-color: #0b141a;
-            background-image: radial-gradient(#1c2831 1px, transparent 1px), radial-gradient(#1c2831 1px, #0b141a 1px);
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                radial-gradient(rgba(255, 255, 255, 0.04) 1px, #0b141a 1px);
         }
 
-        /* Custom Scrollbar */
+        /* Hide scrollbars cleanly for mobile feel */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 3px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(134, 150, 160, 0.4);
+            background: rgba(134, 150, 160, 0.35);
             border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(134, 150, 160, 0.6);
         }
 
         /* Bubble Tails */
@@ -49,7 +50,7 @@
             content: "";
             position: absolute;
             top: 0;
-            left: -8px;
+            left: -7px;
             width: 0;
             height: 0;
             border-top: 8px solid #ffffff;
@@ -63,7 +64,7 @@
             content: "";
             position: absolute;
             top: 0;
-            right: -8px;
+            right: -7px;
             width: 0;
             height: 0;
             border-top: 8px solid #d9fdd3;
@@ -73,10 +74,15 @@
             border-top-color: #005c4b;
         }
 
-        /* Emoji-only message enlargement */
+        /* Selected message highlight overlay */
+        .msg-selected-row {
+            background-color: rgba(0, 168, 132, 0.16) !important;
+        }
+
+        /* Enlarge emoji-only messages like native WhatsApp */
         .emoji-large {
-            font-size: 2.1rem;
-            line-height: 2.4rem;
+            font-size: 2.15rem;
+            line-height: 2.45rem;
         }
     </style>
     <script>
@@ -85,732 +91,223 @@
             theme: {
                 extend: {
                     colors: {
-                        waGreen: '#00a884',
                         waTeal: '#008069',
+                        waTealDark: '#1f2c34',
+                        waGreen: '#00a884',
                         waOutgoing: '#d9fdd3',
                         waOutgoingDark: '#005c4b',
                         waIncoming: '#ffffff',
-                        waIncomingDark: '#202c33',
-                        waHeader: '#f0f2f5',
-                        waHeaderDark: '#202c33',
-                        waSidebarDark: '#111b21'
+                        waIncomingDark: '#202c33'
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="h-screen w-screen flex items-center justify-center bg-[#d1d7db] dark:bg-[#0c1317] select-none">
+<body class="h-[100dvh] w-screen bg-[#111b21] flex items-center justify-center select-none">
 
-    <!-- Top green decorative bar (Desktop WhatsApp Web aesthetic) -->
-    <div class="fixed top-0 left-0 w-full h-32 bg-[#00a884] dark:bg-[#005c4b] z-0 hidden md:block"></div>
+    <!-- Mobile App Shell (Full screen on mobile, centered mobile frame on larger screens) -->
+    <div id="mobile-shell" class="w-full h-full sm:w-[412px] sm:h-[92dvh] sm:max-h-[860px] sm:rounded-[28px] sm:border-[6px] sm:border-[#2a3942] sm:shadow-2xl flex flex-col bg-[#efeae2] dark:bg-[#0b141a] overflow-hidden relative">
 
-    <!-- Main App Container -->
-    <div id="app-container" class="relative z-10 w-full h-full md:w-[96vw] md:max-w-[1550px] md:h-[95vh] bg-white dark:bg-[#111b21] md:rounded-lg shadow-2xl flex overflow-hidden border border-gray-200 dark:border-gray-800">
-
-        <!-- Left Sidebar (Chat List) -->
-        <aside id="sidebar" class="w-full md:w-[360px] lg:w-[400px] flex-shrink-0 border-r border-gray-200 dark:border-gray-800 flex flex-col bg-white dark:bg-[#111b21] transition-all duration-200">
-            
-            <!-- Sidebar Header -->
-            <header class="h-[60px] bg-[#f0f2f5] dark:bg-[#202c33] px-4 flex items-center justify-between flex-shrink-0">
-                <div class="flex items-center gap-3">
-                    <div id="my-avatar" class="w-10 h-10 rounded-full bg-emerald-600 text-white font-semibold flex items-center justify-center text-base shadow-sm">
-                        A
-                    </div>
-                    <div class="flex flex-col">
-                        <span id="my-display-name" class="text-sm font-semibold text-gray-800 dark:text-gray-100 leading-tight">avirup</span>
-                        <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Viewing as You</span>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex items-center gap-1 text-gray-600 dark:text-gray-300">
-                    <!-- Switch Perspective Button -->
-                    <button id="switch-user-btn" title="Switch Sender Perspective" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition" aria-label="Switch perspective">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                        </svg>
-                    </button>
-
-                    <!-- Upload chat.txt Button -->
-                    <label for="file-upload" title="Load custom .txt chat file" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition cursor-pointer">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                        </svg>
-                        <input id="file-upload" type="file" accept=".txt" class="hidden" />
-                    </label>
-
-                    <!-- Dark Mode Toggle -->
-                    <button id="theme-toggle" title="Toggle Dark Mode" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition" aria-label="Toggle theme">
-                        <svg id="theme-icon-dark" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                        <svg id="theme-icon-light" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                        </svg>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Data Source Status Banner -->
-            <div id="source-banner" class="px-3 py-2 bg-amber-50 dark:bg-amber-950/50 border-b border-amber-200 dark:border-amber-900/50 flex items-center justify-between text-xs">
-                <div class="flex items-center gap-2 text-amber-800 dark:text-amber-200">
-                    <span id="source-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span id="source-text">Checking ./chat.txt...</span>
-                </div>
-                <button id="reload-txt-btn" class="text-emerald-700 dark:text-emerald-400 font-semibold hover:underline">Retry</button>
-            </div>
-
-            <!-- Search Bar -->
-            <div class="p-2 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-[#111b21]">
-                <div class="relative flex items-center bg-[#f0f2f5] dark:bg-[#202c33] rounded-lg px-3 py-1.5">
-                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 mr-3 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <!-- Default WhatsApp Mobile Top Header -->
+        <header id="default-header" class="h-[58px] bg-[#008069] dark:bg-[#1f2c34] text-white px-2 flex items-center justify-between flex-shrink-0 shadow-sm z-20">
+            <div class="flex items-center gap-1 min-w-0">
+                <!-- Back Arrow + Avatar -->
+                <button id="switch-perspective-btn" title="Tap to switch sender perspective" class="flex items-center gap-1.5 py-1 px-1 rounded-full active:bg-white/10 transition">
+                    <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
-                    <input id="search-input" type="text" placeholder="Search messages in chat..." class="w-full bg-transparent text-sm text-gray-800 dark:text-gray-100 placeholder-gray-500 focus:outline-none">
-                    <button id="clear-search" class="hidden text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 ml-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Active Chat List Item -->
-            <div class="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800/60">
-                <div id="active-chat-card" class="flex items-center gap-3 px-3 py-3 bg-[#f0f2f5] dark:bg-[#2a3942] cursor-pointer transition">
-                    <div id="contact-avatar-sidebar" class="w-12 h-12 rounded-full bg-teal-700 text-white font-bold flex items-center justify-center text-lg flex-shrink-0">
+                    <div id="contact-avatar" class="w-9 h-9 rounded-full bg-emerald-100 text-[#008069] font-bold flex items-center justify-center text-base flex-shrink-0 shadow-inner">
                         V
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between mb-0.5">
-                            <h3 id="contact-name-sidebar" class="font-semibold text-gray-900 dark:text-gray-100 truncate text-[15px]">Viruss</h3>
-                            <span id="last-msg-time-sidebar" class="text-[11px] text-gray-500 dark:text-gray-400 flex-shrink-0">11:11 AM</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <p id="last-msg-preview" class="text-xs text-gray-600 dark:text-gray-300 truncate">Tai oke nie school e ase6ilm</p>
-                            <span id="msg-count-badge" class="ml-2 px-1.5 py-0.5 text-[10px] font-semibold bg-[#00a884] text-white rounded-full">0</span>
-                        </div>
-                    </div>
-                </div>
+                </button>
 
-                <!-- Helpful Instructions Card inside Sidebar -->
-                <div class="p-4 text-xs text-gray-500 dark:text-gray-400 space-y-2">
-                    <p class="font-semibold text-gray-700 dark:text-gray-300">How this viewer works:</p>
-                    <ul class="list-disc pl-4 space-y-1">
-                        <li>Automatically loads <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">chat.txt</code> from the same folder.</li>
-                        <li>Falls back to dummy chat data if <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">chat.txt</code> is missing.</li>
-                        <li>Click the <span class="font-medium text-gray-700 dark:text-gray-200">Swap icon</span> above to switch right/left sender bubbles.</li>
-                        <li>You can also send live messages below to test the chat!</li>
-                    </ul>
+                <!-- Contact Name & Status -->
+                <div id="contact-info-tap" class="min-w-0 ml-1 cursor-pointer">
+                    <h1 id="contact-name" class="font-semibold text-[16px] leading-tight truncate">Viruss</h1>
+                    <p id="contact-status" class="text-[11.5px] text-white/85 truncate leading-tight">online</p>
                 </div>
             </div>
-        </aside>
 
-        <!-- Right Main Chat Area -->
-        <main id="chat-panel" class="hidden md:flex flex-1 flex-col h-full bg-[#efeae2] dark:bg-[#0b141a] relative">
-            
-            <!-- Chat Header -->
-            <header class="h-[60px] bg-[#f0f2f5] dark:bg-[#202c33] px-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-800 flex-shrink-0 z-10">
-                <div class="flex items-center gap-3 min-w-0">
-                    <!-- Mobile Back Button -->
-                    <button id="mobile-back-btn" class="md:hidden p-1.5 -ml-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
+            <!-- Right Header Icons (Video, Call, Search/Menu) -->
+            <div class="flex items-center gap-0.5">
+                <button id="video-call-btn" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="Video call">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                    </svg>
+                </button>
+                <button id="voice-call-btn" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="Voice call">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+                    </svg>
+                </button>
+                <button id="menu-btn" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="More options">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
 
-                    <!-- Contact Avatar -->
-                    <div id="contact-avatar-header" class="w-10 h-10 rounded-full bg-teal-700 text-white font-bold flex items-center justify-center text-base flex-shrink-0">
-                        V
-                    </div>
-
-                    <!-- Contact Info -->
-                    <div class="min-w-0">
-                        <h2 id="contact-name-header" class="font-semibold text-gray-900 dark:text-gray-100 text-[15px] truncate leading-tight">Viruss</h2>
-                        <p id="contact-status-header" class="text-xs text-gray-500 dark:text-gray-400 truncate">online</p>
-                    </div>
-                </div>
-
-                <!-- Header Right Controls -->
-                <div class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                    <button id="jump-bottom-btn" title="Scroll to latest message" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition text-xs flex items-center gap-1">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
-                    </button>
-                </div>
-            </header>
-
-            <!-- Messages Container -->
-            <div id="messages-container" class="flex-1 overflow-y-auto px-4 sm:px-8 md:px-12 py-4 wa-chat-bg space-y-1.5 select-text">
-                <!-- Messages injected dynamically here -->
+        <!-- Contextual Action Header (Appears when a message is selected: Reply, Star, Edit, Delete, Copy, Forward) -->
+        <header id="selection-header" class="hidden h-[58px] bg-[#008069] dark:bg-[#1f2c34] text-white px-2 flex items-center justify-between flex-shrink-0 shadow-md z-30">
+            <div class="flex items-center gap-3">
+                <button id="close-selection-btn" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="Cancel selection">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </button>
+                <span id="selected-count" class="font-semibold text-base">1</span>
             </div>
 
-            <!-- Floating Scroll-to-Bottom Button -->
-            <button id="floating-scroll-btn" class="hidden absolute bottom-20 right-6 w-10 h-10 rounded-full bg-white dark:bg-[#202c33] shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:scale-105 transition z-20">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            <!-- Action Icons: Reply, Star, Edit, Delete, Copy, Forward -->
+            <div class="flex items-center gap-0.5">
+                <!-- Reply Icon -->
+                <button id="action-reply-btn" title="Reply" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="Reply">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                    </svg>
+                </button>
+
+                <!-- Star Icon -->
+                <button id="action-star-btn" title="Star" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="Star">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                </button>
+
+                <!-- Edit Icon -->
+                <button id="action-edit-btn" title="Edit" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="Edit">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                </button>
+
+                <!-- Delete Icon -->
+                <button id="action-delete-btn" title="Delete" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="Delete">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+
+                <!-- Copy Icon -->
+                <button id="action-copy-btn" title="Copy" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="Copy">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </button>
+
+                <!-- Forward Icon -->
+                <button id="action-forward-btn" title="Forward" class="p-2 rounded-full hover:bg-white/10 active:bg-white/20 transition" aria-label="Forward">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 10H11a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Search Bar Header (Toggled from 3-dot menu) -->
+        <header id="search-header" class="hidden h-[58px] bg-white dark:bg-[#1f2c34] px-2 flex items-center gap-2 flex-shrink-0 shadow-sm z-30 border-b border-gray-200 dark:border-gray-800">
+            <button id="close-search-btn" class="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
             </button>
+            <input id="search-input" type="text" placeholder="Search..." class="flex-1 bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none">
+            <button id="clear-search-btn" class="hidden p-1.5 text-gray-400 hover:text-gray-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </header>
 
-            <!-- Chat Input Footer -->
-            <footer class="min-h-[62px] bg-[#f0f2f5] dark:bg-[#202c33] px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                <!-- Quick Emoji Insert -->
-                <button id="quick-emoji-btn" title="Insert Laughing Emoji" class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+        <!-- 3-Dot Dropdown Menu -->
+        <div id="dropdown-menu" class="hidden absolute top-14 right-2 w-48 bg-white dark:bg-[#233138] rounded-lg shadow-xl py-1.5 z-40 border border-gray-100 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100">
+            <button id="menu-analyse" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60 flex items-center justify-between">
+                <span>Analyse</span>
+                <svg class="w-4 h-4 text-[#00a884]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+            </button>
+            <button id="menu-search" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60">Search</button>
+            <button id="menu-switch-user" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60">Switch sender side</button>
+            <button id="menu-dark-mode" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60">Toggle dark mode</button>
+            <button id="menu-clear-chat" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60 text-red-600 dark:text-red-400">Clear chat</button>
+        </div>
+
+        <!-- Chat Messages Scroll Area -->
+        <main id="messages-container" class="flex-1 overflow-y-auto px-3 py-2.5 wa-chat-bg space-y-1">
+            <!-- Messages dynamically rendered here -->
+        </main>
+
+        <!-- Floating Scroll to Bottom Button -->
+        <button id="scroll-bottom-btn" class="hidden absolute bottom-[68px] right-3 w-9 h-9 rounded-full bg-white dark:bg-[#202c33] shadow-md border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 z-20">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
+            </svg>
+        </button>
+
+        <!-- Reply / Edit Preview Banner (Above Input Box) -->
+        <div id="composer-context-bar" class="hidden bg-white dark:bg-[#1f2c34] px-3 pt-2 pb-1 border-t border-gray-200 dark:border-gray-800 z-20">
+            <div class="flex items-center justify-between bg-[#f0f2f5] dark:bg-[#162026] rounded-lg px-3 py-1.5 border-l-4 border-[#00a884]">
+                <div class="min-w-0 pr-2">
+                    <div id="context-bar-title" class="text-xs font-semibold text-[#008069] dark:text-[#00a884]">Replying to Viruss</div>
+                    <div id="context-bar-text" class="text-xs text-gray-600 dark:text-gray-300 truncate">Message preview</div>
+                </div>
+                <button id="cancel-context-btn" class="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom WhatsApp Mobile Input Bar -->
+        <footer class="px-2 py-1.5 wa-chat-bg flex items-end gap-1.5 flex-shrink-0 z-20">
+            <!-- Rounded White Message Pill -->
+            <div class="flex-1 bg-white dark:bg-[#202c33] rounded-3xl px-2.5 py-1.5 flex items-center gap-1.5 shadow-sm">
+                <!-- Emoji Icon -->
+                <button id="emoji-btn" type="button" class="p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 flex-shrink-0" aria-label="Emoji">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </button>
 
-                <!-- Message Input Form -->
-                <form id="send-message-form" class="flex-1 flex items-center gap-2">
-                    <input id="message-input" type="text" autocomplete="off" placeholder="Type a message" class="w-full bg-white dark:bg-[#2a3942] text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-lg px-4 py-2.5 text-sm focus:outline-none shadow-sm">
-                    <button type="submit" class="p-2.5 rounded-full bg-[#00a884] hover:bg-[#008f6f] text-white transition shadow-sm flex-shrink-0" aria-label="Send message">
-                        <svg class="w-5 h-5 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                        </svg>
-                    </button>
-                </form>
-            </footer>
-        </main>
-    </div>
+                <!-- Text Input -->
+                <input id="message-input" type="text" autocomplete="off" placeholder="Message" class="w-full bg-transparent text-[15px] text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none py-1">
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-900/90 text-white text-xs px-4 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
-        Notification
-    </div>
-
-    <script>
-        /**
-         * Fallback Dummy Data matching the exact WhatsApp export format
-         * Used when ./chat.txt is missing or blocked by local file:// CORS
-         */
-        const DUMMY_CHAT_TEXT = `5/13/22, 11:43 PM - avirup: A6aaaaa🤣🤣🤣🤣🤣
-5/13/22, 11:43 PM - Viruss: Ha vai
-5/13/22, 11:43 PM - avirup: Ami kina ki vablm
-5/13/22, 11:43 PM - Viruss: 🤣🤣🤣🤣
-5/13/22, 11:43 PM - Viruss: 🤣🤣🤣🤣
-5/13/22, 11:43 PM - avirup: 🤣🤣🤣🤣
-5/13/22, 11:43 PM - Viruss: Message late a
-5/13/22, 11:43 PM - Viruss: Jaccha
-5/13/22, 11:43 PM - avirup: Hmmmmm
-5/13/22, 11:44 PM - Viruss: Son tala amar khatai likha diyacha
-5/13/22, 11:44 PM - avirup: Amro prblm ho6e
-5/13/22, 11:44 PM - Viruss: Humm
-5/13/22, 11:44 PM - avirup: Ki
-5/13/22, 11:44 PM - Viruss: Chobi tula diichi
-5/13/22, 11:44 PM - Viruss: Ara pora
-5/13/22, 11:44 PM - Viruss: Dara aktu por on hoccji
-5/13/22, 11:44 PM - avirup: A6a
-5/13/22, 11:44 PM - Viruss: Jama kachbo
-5/13/22, 11:44 PM - Viruss: Aktu
-5/13/22, 11:44 PM - avirup: 👍👍👍🙄🙄
-5/14/22, 11:17 PM - avirup: Valo a6is
-5/14/22, 11:27 PM - Viruss: Ha
-5/14/22, 11:27 PM - Viruss: Ra
-5/14/22, 11:29 PM - avirup: Good girl
-5/21/22, 6:09 PM - avirup: <Media omitted>
-5/21/22, 6:50 PM - Viruss: Thanks
-5/21/22, 7:54 PM - avirup: You are Welcomed
-5/21/22, 8:04 PM - avirup: Crimsonimbrication.blogspot.com
-5/21/22, 8:04 PM - avirup: My story website
-5/21/22, 8:04 PM - avirup: Gie dekhe aai
-5/21/22, 8:18 PM - Viruss: Ok
-6/14/22, 11:31 PM - avirup: https://open.spotify.com/track/19gb5aLqapZwSJXsJ59TJX?si=ktKoQE1WRrOIW1wr-dHPjw&utm_source=whatsapp
-6/14/22, 11:43 PM - Viruss: <Media omitted>
-6/15/22, 7:30 PM - avirup: 🥹
-6/15/22, 8:23 PM - Viruss: 😒
-6/25/22, 1:03 PM - Viruss: Bahh sundorr
-6/25/22, 1:03 PM - avirup: Yahhh
-6/25/22, 2:14 PM - avirup: There's not a single picture of u with me......
-6/25/22, 2:15 PM - avirup: What a shame🙂
-7/2/22, 10:48 AM - Viruss: <Media omitted>
-7/2/22, 10:48 AM - Viruss: Can I call you?
-7/2/22, 10:53 AM - avirup: Rastay a6i vai
-7/2/22, 11:11 AM - Viruss: Bari ala ph kor
-7/2/22, 11:11 AM - avirup: Hmmmmm
-7/2/22, 11:11 AM - avirup: Amni free hoe ge6i
-7/2/22, 11:11 AM - avirup: Muni r exam
-7/2/22, 11:11 AM - Viruss: Ei na char
-7/2/22, 11:11 AM - Viruss: A cha
-7/2/22, 11:11 AM - avirup: Tai oke nie school e ase6ilm`;
-
-        // Application State
-        let parsedMessages = [];
-        let participants = [];
-        let currentUser = ''; // The user whose messages appear on the right (green)
-        let searchQuery = '';
-
-        // DOM Elements
-        const messagesContainer = document.getElementById('messages-container');
-        const sourceDot = document.getElementById('source-dot');
-        const sourceText = document.getElementById('source-text');
-        const searchInput = document.getElementById('search-input');
-        const clearSearchBtn = document.getElementById('clear-search');
-        const floatingScrollBtn = document.getElementById('floating-scroll-btn');
-
-        /**
-         * Shows a sleek temporary notification pill
-         */
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.remove('opacity-0');
-            clearTimeout(window.toastTimer);
-            window.toastTimer = setTimeout(() => {
-                toast.classList.add('opacity-0');
-            }, 2600);
-        }
-
-        /**
-         * Parses standard WhatsApp exported text format:
-         * "M/D/YY, H:MM AM/PM - Sender: Message"
-         * Supports multi-line messages seamlessly.
-         */
-        function parseWhatsAppChat(rawText) {
-            const lines = rawText.split(/\r?\n/);
-            const messages = [];
-            // Regex matches: Date, Time - Sender: Text
-            const lineRegex = /^(\d{1,2}\/\d{1,2}\/\d{2,4}),\s+(\d{1,2}:\d{2}(?::\d{2})?\s*(?:AM|PM|am|pm)?)\s+-\s+([^:]+):\s*(.*)$/;
-            // Regex for WhatsApp system notifications (without sender colon)
-            const systemRegex = /^(\d{1,2}\/\d{1,2}\/\d{2,4}),\s+(\d{1,2}:\d{2}(?::\d{2})?\s*(?:AM|PM|am|pm)?)\s+-\s+(.*)$/;
-
-            let currentMsg = null;
-
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-                if (!line.trim() && !currentMsg) continue;
-
-                const match = line.match(lineRegex);
-                if (match) {
-                    if (currentMsg) messages.push(currentMsg);
-                    currentMsg = {
-                        date: match[1].trim(),
-                        time: match[2].trim(),
-                        sender: match[3].trim(),
-                        text: match[4],
-                        isSystem: false
-                    };
-                } else {
-                    const sysMatch = line.match(systemRegex);
-                    if (sysMatch && !currentMsg) {
-                        messages.push({
-                            date: sysMatch[1].trim(),
-                            time: sysMatch[2].trim(),
-                            sender: 'System',
-                            text: sysMatch[3],
-                            isSystem: true
-                        });
-                    } else if (currentMsg) {
-                        // Append continuation line to previous message
-                        currentMsg.text += '\n' + line;
-                    }
-                }
-            }
-
-            if (currentMsg) {
-                messages.push(currentMsg);
-            }
-
-            return messages;
-        }
-
-        /**
-         * Formats date string (e.g., 5/13/22) into a readable badge (e.g., May 13, 2022)
-         */
-        function formatDateBadge(dateStr) {
-            const parts = dateStr.split('/');
-            if (parts.length === 3) {
-                const monthNames = ["January", "February", "March", "April", "May", "June",
-                    "July", "August", "September", "October", "November", "December"];
-                const m = parseInt(parts[0], 10) - 1;
-                const d = parseInt(parts[1], 10);
-                let y = parseInt(parts[2], 10);
-                if (y < 100) y += 2000;
-                if (monthNames[m]) {
-                    return `${monthNames[m]} ${d}, ${y}`;
-                }
-            }
-            return dateStr;
-        }
-
-        /**
-         * Checks if a string consists solely of 1 to 4 emojis so it can be rendered larger like WhatsApp
-         */
-        function isOnlyEmojis(str) {
-            const trimmed = str.trim();
-            if (!trimmed) return false;
-            const emojiRegex = /^(?:\p{Emoji_Presentation}|\p{Extended_Pictographic}|\u200d|\ufe0f){1,5}$/u;
-            return emojiRegex.test(trimmed);
-        }
-
-        /**
-         * Escapes HTML safely and converts URLs into clickable links
-         */
-        function formatMessageContent(text) {
-            const trimmed = text.trim();
-
-            // Special rendering for <Media omitted>
-            if (trimmed === '<Media omitted>') {
-                return `
-                    <div class="flex items-center gap-2.5 bg-black/5 dark:bg-white/5 px-3 py-2 rounded-md border border-black/10 dark:border-white/10 my-0.5">
-                        <div class="w-8 h-8 rounded bg-emerald-600/20 text-emerald-700 dark:text-emerald-300 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-xs font-medium italic text-gray-600 dark:text-gray-300">Media omitted</span>
-                            <span class="text-[10px] text-gray-400">Exported without media</span>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Special rendering for deleted messages
-            if (trimmed === 'You deleted this message' || trimmed === 'This message was deleted') {
-                return `
-                    <span class="italic text-gray-500 dark:text-gray-400 flex items-center gap-1.5 text-[13px]">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                        </svg>
-                        ${trimmed}
-                    </span>
-                `;
-            }
-
-            // Escape HTML
-            let safe = text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
-
-            // Linkify URLs (http, https, or .blogspot.com / www.)
-            const urlPattern = /((?:https?:\/\/|www\.|[a-zA-Z0-9-]+\.blogspot\.com)[^\s<]+)/gi;
-            safe = safe.replace(urlPattern, (url) => {
-                const href = url.startsWith('http') ? url : `https://${url}`;
-                return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-[#027eb5] dark:text-[#53bdeb] underline break-all hover:opacity-80">${url}</a>`;
-            });
-
-            // Highlight search query if active
-            if (searchQuery.trim() !== '') {
-                const escapedSearch = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const highlightRegex = new RegExp(`(${escapedSearch})`, 'gi');
-                safe = safe.replace(highlightRegex, '<mark class="bg-yellow-300 text-gray-900 rounded px-0.5">$1</mark>');
-            }
-
-            return safe.replace(/\n/g, '<br>');
-        }
-
-        /**
-         * Updates header & sidebar user names/avatars based on selected perspective
-         */
-        function updateUIHeaders() {
-            const otherUser = participants.find(p => p !== currentUser) || 'Contact';
-            const myInitial = (currentUser[0] || 'Y').toUpperCase();
-            const otherInitial = (otherUser[0] || 'C').toUpperCase();
-
-            document.getElementById('my-display-name').textContent = currentUser;
-            document.getElementById('my-avatar').textContent = myInitial;
-
-            document.getElementById('contact-name-sidebar').textContent = otherUser;
-            document.getElementById('contact-avatar-sidebar').textContent = otherInitial;
-            document.getElementById('contact-name-header').textContent = otherUser;
-            document.getElementById('contact-avatar-header').textContent = otherInitial;
-
-            document.getElementById('msg-count-badge').textContent = parsedMessages.length;
-
-            if (parsedMessages.length > 0) {
-                const last = parsedMessages[parsedMessages.length - 1];
-                document.getElementById('last-msg-time-sidebar').textContent = last.time;
-                document.getElementById('last-msg-preview').textContent = `${last.sender === currentUser ? 'You: ' : ''}${last.text}`;
-            }
-        }
-
-        /**
-         * Renders all chat messages into the chat container
-         */
-        function renderMessages(scrollToBottom = true) {
-            messagesContainer.innerHTML = '';
-
-            // Filter by search query if active
-            const filtered = searchQuery.trim()
-                ? parsedMessages.filter(m => m.text.toLowerCase().includes(searchQuery.toLowerCase()) || m.sender.toLowerCase().includes(searchQuery.toLowerCase()))
-                : parsedMessages;
-
-            if (filtered.length === 0) {
-                messagesContainer.innerHTML = `
-                    <div class="h-full flex flex-col items-center justify-center text-center p-6">
-                        <div class="bg-white/90 dark:bg-[#202c33] px-5 py-3 rounded-xl shadow-sm text-sm text-gray-600 dark:text-gray-300">
-                            No messages found matching "<span class="font-semibold">${searchQuery}</span>"
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-
-            let lastDate = null;
-            let lastSender = null;
-
-            const fragment = document.createDocumentFragment();
-
-            filtered.forEach((msg) => {
-                // Insert Date Divider Badge when date changes
-                if (msg.date !== lastDate) {
-                    const dateDiv = document.createElement('div');
-                    dateDiv.className = 'flex justify-center my-3 sticky top-1 z-10';
-                    dateDiv.innerHTML = `
-                        <span class="bg-white/95 dark:bg-[#182229] text-gray-600 dark:text-gray-300 text-[11.5px] font-medium px-3 py-1 rounded-lg shadow-sm uppercase tracking-wide">
-                            ${formatDateBadge(msg.date)}
-                        </span>
-                    `;
-                    fragment.appendChild(dateDiv);
-                    lastDate = msg.date;
-                    lastSender = null; // Reset tail grouping on new day
-                }
-
-                // System message
-                if (msg.isSystem) {
-                    const sysDiv = document.createElement('div');
-                    sysDiv.className = 'flex justify-center my-2';
-                    sysDiv.innerHTML = `
-                        <span class="bg-[#ffeecd] dark:bg-[#182229] text-gray-700 dark:text-amber-200/80 text-xs px-3 py-1.5 rounded-lg shadow-sm text-center max-w-md">
-                            ${msg.text}
-                        </span>
-                    `;
-                    fragment.appendChild(sysDiv);
-                    lastSender = null;
-                    return;
-                }
-
-                const isOutgoing = msg.sender === currentUser;
-                const isFirstInGroup = msg.sender !== lastSender;
-                lastSender = msg.sender;
-
-                const row = document.createElement('div');
-                row.className = `flex w-full ${isOutgoing ? 'justify-end' : 'justify-start'} ${isFirstInGroup ? 'mt-2' : 'mt-0.5'}`;
-
-                const emojiOnly = isOnlyEmojis(msg.text);
-                const bubbleBg = isOutgoing
-                    ? 'bg-[#d9fdd3] dark:bg-[#005c4b] text-gray-900 dark:text-gray-100'
-                    : 'bg-white dark:bg-[#202c33] text-gray-900 dark:text-gray-100';
-
-                const tailClass = isFirstInGroup ? (isOutgoing ? 'tail-out rounded-tr-none' : 'tail-in rounded-tl-none') : '';
-
-                // Double blue checkmarks for outgoing messages
-                const checkmarks = isOutgoing ? `
-                    <svg class="w-4 h-4 text-[#53bdeb] inline-block ml-0.5 -mb-0.5 flex-shrink-0" viewBox="0 0 16 15" fill="currentColor">
-                        <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z"/>
+                <!-- Attachment Paperclip Icon -->
+                <button id="attach-btn" type="button" class="p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 flex-shrink-0 -rotate-45" aria-label="Attach">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                     </svg>
-                ` : '';
+                </button>
 
-                // Show sender name if more than 2 people exist in the chat
-                const showSenderLabel = !isOutgoing && participants.length > 2 && isFirstInGroup;
+                <!-- Camera Icon (Hidden when typing) -->
+                <button id="camera-btn" type="button" class="p-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 flex-shrink-0" aria-label="Camera">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+            </div>
 
-                row.innerHTML = `
-                    <div class="relative max-w-[82%] sm:max-w-[68%] md:max-w-[62%] px-3 py-1.5 rounded-lg shadow-[0_1px_0.5px_rgba(11,20,26,0.13)] ${bubbleBg} ${tailClass} break-words">
-                        ${showSenderLabel ? `<div class="text-xs font-semibold text-teal-600 dark:text-teal-400 mb-0.5">${msg.sender}</div>` : ''}
-                        <div class="${emojiOnly ? 'emoji-large py-1' : 'text-[14.2px] leading-[19px]'}">
-                            ${formatMessageContent(msg.text)}
-                            <span class="inline-flex items-center float-right ml-2 mt-1.5 text-[10.5px] text-gray-500 dark:text-gray-400 select-none">
-                                ${msg.time}
-                                ${checkmarks}
-                            </span>
-                        </div>
-                    </div>
-                `;
+            <!-- Circular Green Mic / Send Button -->
+            <button id="send-or-mic-btn" type="button" class="w-11 h-11 rounded-full bg-[#00a884] active:bg-[#008f6f] text-white flex items-center justify-center shadow-md flex-shrink-0 transition" aria-label="Send">
+                <!-- Mic Icon (shown when input is empty) -->
+                <svg id="mic-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15a.998.998 0 00-.98-.85c-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/>
+                </svg>
+                <!-- Send Icon (shown when typing or editing) -->
+                <svg id="send-icon" class="w-5 h-5 translate-x-0.5 hidden" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+            </button>
+        </footer>
 
-                fragment.appendChild(row);
-            });
-
-            messagesContainer.appendChild(fragment);
-
-            if (scrollToBottom) {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-        }
-
-        /**
-         * Initializes parsed chat data into state and renders UI
-         */
-        function loadChatData(rawText, sourceLabel, isFromFile) {
-            parsedMessages = parseWhatsAppChat(rawText);
-
-            // Extract unique non-system participants
-            const uniqueSenders = [...new Set(parsedMessages.filter(m => !m.isSystem).map(m => m.sender))];
-            participants = uniqueSenders.length > 0 ? uniqueSenders : ['avirup', 'Viruss'];
-
-            // Default 'avirup' as current user if present, otherwise first participant
-            if (!currentUser || !participants.includes(currentUser)) {
-                currentUser = participants.find(p => p.toLowerCase() === 'avirup') || participants[0];
-            }
-
-            // Update source indicator banner
-            sourceText.textContent = sourceLabel;
-            if (isFromFile) {
-                sourceDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
-            } else {
-                sourceDot.className = 'w-2 h-2 rounded-full bg-amber-500';
-            }
-
-            updateUIHeaders();
-            renderMessages(true);
-        }
-
-        /**
-         * Attempts to fetch ./chat.txt from the same folder.
-         * Falls back to DUMMY_CHAT_TEXT if not found or unavailable.
-         */
-        async function fetchLocalChatFile() {
-            sourceText.textContent = 'Loading ./chat.txt...';
-            try {
-                const response = await fetch('./chat.txt', { cache: 'no-store' });
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                const text = await response.text();
-                if (!text.trim()) {
-                    throw new Error('chat.txt is empty');
-                }
-                loadChatData(text, 'Loaded from ./chat.txt', true);
-                showToast('Loaded messages from chat.txt');
-            } catch (err) {
-                console.warn('Could not load ./chat.txt, falling back to dummy data:', err);
-                loadChatData(DUMMY_CHAT_TEXT, 'chat.txt not found — showing dummy chat', false);
-            }
-        }
-
-        // --- Event Listeners ---
-
-        // Switch Perspective Button (Swap left/right bubbles between participants)
-        document.getElementById('switch-user-btn').addEventListener('click', () => {
-            if (participants.length < 2) return;
-            const currentIdx = participants.indexOf(currentUser);
-            currentUser = participants[(currentIdx + 1) % participants.length];
-            updateUIHeaders();
-            renderMessages(false);
-            showToast(`Viewing chat as "${currentUser}"`);
-        });
-
-        // Upload custom .txt file manually
-        document.getElementById('file-upload').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                loadChatData(event.target.result, `Loaded: ${file.name}`, true);
-                showToast(`Loaded ${file.name}`);
-            };
-            reader.readAsText(file);
-        });
-
-        // Retry fetching ./chat.txt
-        document.getElementById('reload-txt-btn').addEventListener('click', () => {
-            fetchLocalChatFile();
-        });
-
-        // Search input filtering
-        searchInput.addEventListener('input', (e) => {
-            searchQuery = e.target.value;
-            clearSearchBtn.classList.toggle('hidden', searchQuery.length === 0);
-            renderMessages(false);
-        });
-
-        clearSearchBtn.addEventListener('click', () => {
-            searchQuery = '';
-            searchInput.value = '';
-            clearSearchBtn.classList.add('hidden');
-            renderMessages(true);
-        });
-
-        // Send new interactive message in the UI
-        document.getElementById('send-message-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const input = document.getElementById('message-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const now = new Date();
-            const dateStr = `${now.getMonth() + 1}/${now.getDate()}/${String(now.getFullYear()).slice(-2)}`;
-            const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-
-            parsedMessages.push({
-                date: dateStr,
-                time: timeStr,
-                sender: currentUser,
-                text: text,
-                isSystem: false
-            });
-
-            input.value = '';
-            updateUIHeaders();
-            renderMessages(true);
-        });
-
-        // Quick Emoji button
-        document.getElementById('quick-emoji-btn').addEventListener('click', () => {
-            const input = document.getElementById('message-input');
-            input.value += '🤣';
-            input.focus();
-        });
-
-        // Scroll-to-bottom buttons
-        document.getElementById('jump-bottom-btn').addEventListener('click', () => {
-            messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
-        });
-        floatingScrollBtn.addEventListener('click', () => {
-            messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
-        });
-
-        messagesContainer.addEventListener('scroll', () => {
-            const distanceFromBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight;
-            floatingScrollBtn.classList.toggle('hidden', distanceFromBottom < 250);
-        });
-
-        // Dark mode toggle
-        const themeToggle = document.getElementById('theme-toggle');
-        const iconDark = document.getElementById('theme-icon-dark');
-        const iconLight = document.getElementById('theme-icon-light');
-
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            iconDark.classList.toggle('hidden', !isDark);
-            iconLight.classList.toggle('hidden', isDark);
-        });
-
-        // Mobile responsive view switching between Sidebar and Chat Panel
-        const sidebar = document.getElementById('sidebar');
-        const chatPanel = document.getElementById('chat-panel');
-
-        document.getElementById('active-chat-card').addEventListener('click', () => {
-            if (window.innerWidth < 768) {
-                sidebar.classList.add('hidden');
-                chatPanel.classList.remove('hidden');
-                chatPanel.classList.add('flex');
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-        });
-
-        document.getElementById('mobile-back-btn').addEventListener('click', () => {
-            if (window.innerWidth < 768) {
-                chatPanel.classList.add('hidden');
-                chatPanel.classList.remove('flex');
-                sidebar.classList.remove('hidden');
-            }
-        });
-
-        // Initialize on load
-        window.addEventListener('DOMContentLoaded', () => {
-            // On mobile, show chat directly on first load for immediate visibility
-            if (window.innerWidth < 768) {
-                sidebar.classList.add('hidden');
-                chatPanel.classList.remove('hidden');
-                chatPanel.classList.add('flex');
-            }
-            fetchLocalChatFile();
-        });
-    </script>
-</body>
-</html>
+        <!-- Delete Confirmation Bottom Modal (WhatsApp Style) -->
+        <div id="delete-modal" class="hidden absolute inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#233138] w-full max-w-xs rounded-2xl p-5 shadow-2xl space-y-4">
+                <p class="text-sm text-gray-700 dark:text-gray-200">Delete message?</p>
+                <div class="flex flex-col items-end gap-2 text-sm font-semibold text-[#008069] dark:text-[#00a884]">
+                    <button id
