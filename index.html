@@ -206,19 +206,41 @@
         </header>
 
         <!-- Search Bar Header (Toggled from 3-dot menu) -->
-        <header id="search-header" class="hidden h-[58px] bg-white dark:bg-[#1f2c34] px-2 flex items-center gap-2 flex-shrink-0 shadow-sm z-30 border-b border-gray-200 dark:border-gray-800">
-            <button id="close-search-btn" class="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-            </button>
-            <input id="search-input" type="text" placeholder="Search..." class="flex-1 bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none">
-            <button id="clear-search-btn" class="hidden p-1.5 text-gray-400 hover:text-gray-600">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+        <header id="search-header" class="hidden bg-white dark:bg-[#1f2c34] px-2.5 py-2 flex flex-col gap-2 flex-shrink-0 shadow-sm z-30 border-b border-gray-200 dark:border-gray-800">
+            <div class="flex items-center gap-2">
+                <button id="close-search-btn" class="p-1.5 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </button>
+                <input id="search-input" type="text" placeholder="Search messages..." class="flex-1 bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none">
+                <button id="toggle-date-filter-btn" title="Filter by date range" class="p-1.5 rounded-full text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </button>
+                <button id="clear-search-btn" class="hidden p-1.5 text-gray-400 hover:text-gray-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Date Range Filter Row (From Date -> To Date) -->
+            <div id="date-filter-row" class="hidden flex items-center gap-1.5 pt-1 border-t border-gray-100 dark:border-gray-700/70 text-xs">
+                <div class="flex-1 flex items-center gap-1 bg-gray-100 dark:bg-[#111b21] rounded-lg px-2 py-1">
+                    <span class="text-[10px] text-gray-500 dark:text-gray-400">From</span>
+                    <input id="search-date-from" type="date" class="w-full bg-transparent text-[11px] text-gray-800 dark:text-gray-100 focus:outline-none">
+                </div>
+                <div class="flex-1 flex items-center gap-1 bg-gray-100 dark:bg-[#111b21] rounded-lg px-2 py-1">
+                    <span class="text-[10px] text-gray-500 dark:text-gray-400">To</span>
+                    <input id="search-date-to" type="date" class="w-full bg-transparent text-[11px] text-gray-800 dark:text-gray-100 focus:outline-none">
+                </div>
+                <button id="reset-dates-btn" class="px-2 py-1 text-[11px] font-medium text-[#008069] dark:text-[#00a884] hover:underline">Reset</button>
+            </div>
         </header>
+
+        <!-- Hidden Multi-File Upload Input -->
+        <input id="chat-files-input" type="file" accept=".txt" multiple class="hidden">
 
         <!-- 3-Dot Dropdown Menu -->
         <div id="dropdown-menu" class="hidden absolute top-14 right-2 w-48 bg-white dark:bg-[#233138] rounded-lg shadow-xl py-1.5 z-40 border border-gray-100 dark:border-gray-700 text-sm text-gray-800 dark:text-gray-100">
@@ -228,7 +250,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
             </button>
-            <button id="menu-search" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60">Search</button>
+            <button id="menu-search" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60">Search &amp; Date Filter</button>
+            <button id="menu-load-files" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60">Load chat .txt files</button>
             <button id="menu-switch-user" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60">Switch sender side</button>
             <button id="menu-dark-mode" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60">Toggle dark mode</button>
             <button id="menu-clear-chat" class="w-full text-left px-4 py-2.5 hover:bg-gray-100 dark:hover:bg-gray-700/60 text-red-600 dark:text-red-400">Clear chat</button>
@@ -399,37 +422,33 @@
     </div>
 
     <script>
-        const REMOTE_CHAT_URL = 'https://avirup2470.github.io/Whatsapp/chat.txt';
+        const REMOTE_BASE_URL = 'https://avirup2470.github.io/Whatsapp/';
+        const CANDIDATE_FILES = ['chat.txt', 'chat1.txt', 'chat2.txt', 'chat3.txt', 'chat4.txt', 'chat5.txt'];
 
-        // Built-in fallback dummy chat in case offline or fetch fails
-        const FALLBACK_CHAT_TEXT = `5/13/22, 11:43 PM - avirup: A6aaaaa🤣🤣🤣🤣🤣
+        // Built-in fallback dummy chat supporting both date/time formats
+        const FALLBACK_CHAT_TEXT = `13/04/2022, 6:43\u202fpm - Messages and calls are end-to-end encrypted. Only people in this chat can read, listen to, or share them. *Learn more*
+13/04/2022, 12:33\u202fam - Summer 🏝️: <Media omitted>
+13/04/2022, 8:47\u202fpm - Summer 🏝️: Ohhhooo
+13/04/2022, 9:24\u202fpm - Avi: 😁😁😁
+13/04/2022, 9:31\u202fpm - Avi: Oye amr dp ta thik aye na change korbo
+13/04/2022, 10:04\u202fpm - Summer 🏝️: Change kor
+13/04/2022, 10:04\u202fpm - Avi: A6a
+13/04/2022, 10:05\u202fpm - Avi: <Media omitted>
+13/04/2022, 10:06\u202fpm - Summer 🏝️: <Media omitted>
+13/04/2022, 10:06\u202fpm - Summer 🏝️: Chirasri dakh
+13/04/2022, 10:06\u202fpm - Avi: 🤣🤣🤣🤣🤣🤣🤣🤣🤣🤣🤣🤣🤣
+13/04/2022, 10:06\u202fpm - Avi: Seraa
+13/04/2022, 10:06\u202fpm - Summer 🏝️: Ha o serai
+13/04/2022, 10:07\u202fpm - Avi: Hmmm tor bondhu bole kotha
+15/04/2022, 10:22\u202fam - Avi: Suvo noboborsho vai
+15/04/2022, 8:47\u202fpm - Summer 🏝️: Subho noborsho
+19/04/2022, 11:36\u202fam - Avi: Good morning 🌻
+5/13/22, 11:43 PM - avirup: A6aaaaa🤣🤣🤣🤣🤣
 5/13/22, 11:43 PM - Viruss: Ha vai
-5/13/22, 11:43 PM - avirup: Ami kina ki vablm
-5/13/22, 11:43 PM - Viruss: 🤣🤣🤣🤣
-5/13/22, 11:43 PM - Viruss: 🤣🤣🤣🤣
-5/13/22, 11:43 PM - avirup: 🤣🤣🤣🤣
-5/13/22, 11:43 PM - Viruss: Message late a
-5/13/22, 11:43 PM - Viruss: Jaccha
-5/13/22, 11:43 PM - avirup: Hmmmmm
-5/13/22, 11:44 PM - Viruss: Son tala amar khatai likha diyacha
-5/13/22, 11:44 PM - avirup: Amro prblm ho6e
-5/13/22, 11:44 PM - Viruss: Humm
-5/13/22, 11:44 PM - avirup: Ki
-5/13/22, 11:44 PM - Viruss: Chobi tula diichi
-5/13/22, 11:44 PM - Viruss: Ara pora
-5/13/22, 11:44 PM - Viruss: Dara aktu por on hoccji
-5/13/22, 11:44 PM - avirup: A6a
-5/13/22, 11:44 PM - Viruss: Jama kachbo
-5/13/22, 11:44 PM - Viruss: Aktu
 5/13/22, 11:44 PM - avirup: 👍👍👍🙄🙄
 5/21/22, 6:09 PM - avirup: <Media omitted>
 5/21/22, 6:50 PM - Viruss: Thanks
-5/21/22, 8:04 PM - avirup: Crimsonimbrication.blogspot.com
-6/14/22, 11:31 PM - avirup: https://open.spotify.com/track/19gb5aLqapZwSJXsJ59TJX?si=ktKoQE1WRrOIW1wr-dHPjw&utm_source=whatsapp
-7/2/22, 10:48 AM - Viruss: Can I call you?
-7/2/22, 10:53 AM - avirup: Rastay a6i vai
-7/2/22, 11:11 AM - Viruss: Bari ala ph kor
-7/2/22, 11:11 AM - avirup: Hmmmmm`;
+5/21/22, 8:04 PM - avirup: Crimsonimbrication.blogspot.com`;
 
         // State
         let messages = [];
@@ -439,6 +458,8 @@
         let editingMsgId = null;
         let replyingToMsg = null;
         let searchQuery = '';
+        let dateFromFilter = '';
+        let dateToFilter = '';
 
         // DOM References
         const messagesContainer = document.getElementById('messages-container');
@@ -458,6 +479,158 @@
             toast.classList.remove('opacity-0');
             clearTimeout(window._toastTimeout);
             window._toastTimeout = setTimeout(() => toast.classList.add('opacity-0'), 2000);
+        }
+
+        /**
+         * Detects whether a file uses DD/MM/YYYY or M/D/YY by inspecting all dates in the text,
+         * then normalizes every date & timestamp into canonical ISO date (YYYY-MM-DD) and epoch ms.
+         */
+        function detectDateOrder(lines) {
+            let dmyEvidence = 0;
+            let mdyEvidence = 0;
+            const datePrefixRegex = /^[\u200e\u200f]*(\d{1,2})\/(\d{1,2})\/(\d{2,4}),/;
+
+            for (const line of lines) {
+                const m = line.match(datePrefixRegex);
+                if (!m) continue;
+                const first = parseInt(m[1], 10);
+                const second = parseInt(m[2], 10);
+                const yearRaw = m[3];
+
+                if (first > 12) dmyEvidence += 10;
+                if (second > 12) mdyEvidence += 10;
+                // 4-digit year with zero-padded day/month (e.g., 13/04/2022) strongly signals DD/MM/YYYY
+                if (yearRaw.length === 4 && (m[1].length === 2 || m[2].length === 2)) dmyEvidence += 1;
+            }
+            return dmyEvidence >= mdyEvidence ? 'DMY' : 'MDY';
+        }
+
+        function parseDateTimeInfo(dateStr, timeStr, dateOrder) {
+            const parts = dateStr.split('/');
+            let day = 1, month = 1, year = 2022;
+
+            if (parts.length === 3) {
+                const p1 = parseInt(parts[0], 10);
+                const p2 = parseInt(parts[1], 10);
+                let y = parseInt(parts[2], 10);
+                if (y < 100) y += 2000;
+                year = y;
+
+                if (p1 > 12) {
+                    day = p1;
+                    month = p2;
+                } else if (p2 > 12) {
+                    month = p1;
+                    day = p2;
+                } else if (dateOrder === 'DMY') {
+                    day = p1;
+                    month = p2;
+                } else {
+                    month = p1;
+                    day = p2;
+                }
+            }
+
+            // Normalize narrow non-breaking spaces (\u202f) and regular spaces in time
+            const cleanTime = timeStr.replace(/[\u202f\u00a0\s]+/g, ' ').trim();
+            let hours = 0, minutes = 0, seconds = 0;
+            const tMatch = cleanTime.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM|am|pm)?$/);
+            if (tMatch) {
+                hours = parseInt(tMatch[1], 10);
+                minutes = parseInt(tMatch[2], 10);
+                seconds = tMatch[3] ? parseInt(tMatch[3], 10) : 0;
+                const meridiem = tMatch[4] ? tMatch[4].toLowerCase() : '';
+                if (meridiem === 'pm' && hours < 12) hours += 12;
+                if (meridiem === 'am' && hours === 12) hours = 0;
+            }
+
+            const isoDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const timestamp = new Date(year, month - 1, day, hours, minutes, seconds).getTime();
+
+            return {
+                isoDate,
+                displayTime: cleanTime,
+                timestamp: Number.isNaN(timestamp) ? 0 : timestamp
+            };
+        }
+
+        /**
+         * Parses WhatsApp export lines supporting both:
+         * - 13/04/2022, 6:43 pm - Sender: Message (with \u202f narrow spaces & emoji names)
+         * - 5/13/22, 11:43 PM - Sender: Message
+         */
+        function parseWhatsAppText(raw, sourceOrder = 0) {
+            const lines = raw.split(/\r?\n/);
+            const dateOrder = detectDateOrder(lines);
+            const parsed = [];
+
+            const msgRegex = /^[\u200e\u200f]*(\d{1,2}\/\d{1,2}\/\d{2,4}),[\s\u202f\u00a0]+(\d{1,2}:\d{2}(?::\d{2})?(?:[\s\u202f\u00a0]*(?:AM|PM|am|pm))?)[\s\u202f\u00a0]+-[\s\u202f\u00a0]+([^:]+):[\s\u202f\u00a0]*(.*)$/;
+            const sysRegex = /^[\u200e\u200f]*(\d{1,2}\/\d{1,2}\/\d{2,4}),[\s\u202f\u00a0]+(\d{1,2}:\d{2}(?::\d{2})?(?:[\s\u202f\u00a0]*(?:AM|PM|am|pm))?)[\s\u202f\u00a0]+-[\s\u202f\u00a0]+(.*)$/;
+
+            let current = null;
+            let seq = 0;
+
+            for (const line of lines) {
+                if (!line.trim() && !current) continue;
+                const match = line.match(msgRegex);
+                if (match) {
+                    if (current) parsed.push(current);
+                    const dtInfo = parseDateTimeInfo(match[1].trim(), match[2], dateOrder);
+                    const text = match[4];
+                    const isDeleted = text.trim() === 'You deleted this message' || text.trim() === 'This message was deleted';
+                    current = {
+                        id: `${sourceOrder}-${++seq}-${dtInfo.timestamp}`,
+                        seq: seq,
+                        sourceOrder,
+                        date: dtInfo.isoDate,
+                        timestamp: dtInfo.timestamp,
+                        time: dtInfo.displayTime,
+                        sender: match[3].trim(),
+                        text: text,
+                        isSystem: false,
+                        edited: false,
+                        starred: false,
+                        deleted: isDeleted,
+                        replyTo: null
+                    };
+                } else {
+                    const sysMatch = line.match(sysRegex);
+                    if (sysMatch) {
+                        if (current) {
+                            parsed.push(current);
+                            current = null;
+                        }
+                        const dtInfo = parseDateTimeInfo(sysMatch[1].trim(), sysMatch[2], dateOrder);
+                        parsed.push({
+                            id: `${sourceOrder}-${++seq}-${dtInfo.timestamp}`,
+                            seq: seq,
+                            sourceOrder,
+                            date: dtInfo.isoDate,
+                            timestamp: dtInfo.timestamp,
+                            time: dtInfo.displayTime,
+                            sender: 'System',
+                            text: sysMatch[3],
+                            isSystem: true
+                        });
+                    } else if (current) {
+                        current.text += '\n' + line;
+                    }
+                }
+            }
+            if (current) parsed.push(current);
+            return parsed;
+        }
+
+        function formatDateChip(isoDateStr) {
+            const parts = isoDateStr.split('-');
+            if (parts.length === 3) {
+                const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const y = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10) - 1;
+                const d = parseInt(parts[2], 10);
+                if (months[m]) return `${months[m]} ${d}, ${y}`;
+            }
+            return isoDateStr;
         }
 
         /**
@@ -588,8 +761,10 @@
         function renderMessages(scrollBottom = true) {
             messagesContainer.innerHTML = '';
 
+            const hasFilter = searchQuery.trim() || dateFromFilter || dateToFilter;
+
             // End-to-end encryption notice at top of chat like real WhatsApp
-            if (!searchQuery.trim()) {
+            if (!hasFilter) {
                 const e2e = document.createElement('div');
                 e2e.className = 'flex justify-center my-2';
                 e2e.innerHTML = `
@@ -600,9 +775,24 @@
                 messagesContainer.appendChild(e2e);
             }
 
-            const list = searchQuery.trim()
-                ? messages.filter(m => !m.deleted && m.text.toLowerCase().includes(searchQuery.toLowerCase()))
-                : messages;
+            const list = messages.filter(m => {
+                if (dateFromFilter && m.date < dateFromFilter) return false;
+                if (dateToFilter && m.date > dateToFilter) return false;
+                if (searchQuery.trim()) {
+                    if (m.deleted) return false;
+                    return m.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           m.sender.toLowerCase().includes(searchQuery.toLowerCase());
+                }
+                return true;
+            });
+
+            if (hasFilter && list.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'flex justify-center my-8';
+                empty.innerHTML = `<span class="bg-white/90 dark:bg-[#182229] text-[#54656f] dark:text-[#8696a0] text-xs px-3.5 py-2 rounded-lg shadow-sm">No messages found for this filter</span>`;
+                messagesContainer.appendChild(empty);
+                return;
+            }
 
             let lastDate = null;
             let lastSender = null;
@@ -820,11 +1010,14 @@
             const msg = messages.find(m => m.id === selectedMsgId);
             if (msg) {
                 const now = new Date();
-                const dateStr = `${now.getMonth() + 1}/${now.getDate()}/${String(now.getFullYear()).slice(-2)}`;
+                const isoDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
                 const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
                 messages.push({
-                    id: Date.now(),
-                    date: dateStr,
+                    id: `local-${Date.now()}`,
+                    seq: messages.length + 1,
+                    sourceOrder: 999,
+                    date: isoDate,
+                    timestamp: now.getTime(),
                     time: timeStr,
                     sender: currentUser,
                     text: msg.text,
@@ -896,12 +1089,15 @@
             }
 
             const now = new Date();
-            const dateStr = `${now.getMonth() + 1}/${now.getDate()}/${String(now.getFullYear()).slice(-2)}`;
+            const isoDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
             const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
             messages.push({
-                id: Date.now(),
-                date: dateStr,
+                id: `local-${Date.now()}`,
+                seq: messages.length + 1,
+                sourceOrder: 999,
+                date: isoDate,
+                timestamp: now.getTime(),
                 time: timeStr,
                 sender: currentUser,
                 text: text,
@@ -958,29 +1154,85 @@
             dropdownMenu.classList.add('hidden');
             defaultHeader.classList.add('hidden');
             searchHeader.classList.remove('hidden');
+            document.getElementById('date-filter-row').classList.remove('hidden');
             document.getElementById('search-input').focus();
+        });
+
+        document.getElementById('toggle-date-filter-btn').addEventListener('click', () => {
+            document.getElementById('date-filter-row').classList.toggle('hidden');
         });
 
         document.getElementById('close-search-btn').addEventListener('click', () => {
             searchQuery = '';
+            dateFromFilter = '';
+            dateToFilter = '';
             document.getElementById('search-input').value = '';
+            document.getElementById('search-date-from').value = '';
+            document.getElementById('search-date-to').value = '';
             document.getElementById('clear-search-btn').classList.add('hidden');
             searchHeader.classList.add('hidden');
             defaultHeader.classList.remove('hidden');
             renderMessages(true);
         });
 
+        function updateSearchClearVisibility() {
+            const hasAny = Boolean(searchQuery || dateFromFilter || dateToFilter);
+            document.getElementById('clear-search-btn').classList.toggle('hidden', !hasAny);
+        }
+
         document.getElementById('search-input').addEventListener('input', (e) => {
             searchQuery = e.target.value;
-            document.getElementById('clear-search-btn').classList.toggle('hidden', !searchQuery);
+            updateSearchClearVisibility();
             renderMessages(false);
+        });
+
+        document.getElementById('search-date-from').addEventListener('change', (e) => {
+            dateFromFilter = e.target.value;
+            updateSearchClearVisibility();
+            renderMessages(false);
+        });
+
+        document.getElementById('search-date-to').addEventListener('change', (e) => {
+            dateToFilter = e.target.value;
+            updateSearchClearVisibility();
+            renderMessages(false);
+        });
+
+        document.getElementById('reset-dates-btn').addEventListener('click', () => {
+            dateFromFilter = '';
+            dateToFilter = '';
+            document.getElementById('search-date-from').value = '';
+            document.getElementById('search-date-to').value = '';
+            updateSearchClearVisibility();
+            renderMessages(true);
         });
 
         document.getElementById('clear-search-btn').addEventListener('click', () => {
             searchQuery = '';
+            dateFromFilter = '';
+            dateToFilter = '';
             document.getElementById('search-input').value = '';
+            document.getElementById('search-date-from').value = '';
+            document.getElementById('search-date-to').value = '';
             document.getElementById('clear-search-btn').classList.add('hidden');
             renderMessages(true);
+        });
+
+        // Manual Multi-File Upload Support
+        const chatFilesInput = document.getElementById('chat-files-input');
+        document.getElementById('menu-load-files').addEventListener('click', () => {
+            dropdownMenu.classList.add('hidden');
+            chatFilesInput.click();
+        });
+
+        chatFilesInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files || []);
+            if (files.length === 0) return;
+
+            const texts = await Promise.all(files.map(f => f.text()));
+            loadAndMergeTexts(texts);
+            showToast(`Loaded ${files.length} file${files.length > 1 ? 's' : ''}`);
+            chatFilesInput.value = '';
         });
 
         document.getElementById('menu-dark-mode').addEventListener('click', () => {
@@ -1008,8 +1260,8 @@
          */
         function renderAnalytics() {
             const validMsgs = messages.filter(m => !m.isSystem);
-            const u1Name = participants.find(p => p.toLowerCase() === 'avirup') || participants[0] || 'avirup';
-            const u2Name = participants.find(p => p.toLowerCase() === 'viruss') || participants.find(p => p !== u1Name) || 'Viruss';
+            const u1Name = participants.find(p => p.toLowerCase() === 'avirup' || p.toLowerCase() === 'avi') || participants[0] || 'avirup';
+            const u2Name = participants.find(p => p !== u1Name) || 'Viruss';
 
             let totalCount = 0;
             let u1Total = 0;
@@ -1025,14 +1277,13 @@
                 if (isU1) u1Total++;
                 else if (isU2) u2Total++;
 
-                const parts = msg.date.split('/');
+                const parts = msg.date.split('-');
                 let sortKey = msg.date;
                 let label = msg.date;
 
                 if (parts.length === 3) {
-                    const m = parseInt(parts[0], 10);
-                    let y = parseInt(parts[2], 10);
-                    if (y < 100) y += 2000;
+                    const y = parseInt(parts[0], 10);
+                    const m = parseInt(parts[1], 10);
                     sortKey = `${y}-${String(m).padStart(2, '0')}`;
                     label = `${monthNames[m - 1] || m} '${String(y).slice(-2)}`;
                 }
@@ -1198,30 +1449,81 @@
         });
 
         /**
-         * Silently fetches chat.txt from https://avirup2470.github.io/Whatsapp/chat.txt
-         * without showing any status banners. Uses fallback silently if unreachable.
+         * Combines multiple chat text contents, deduplicates identical overlapping messages,
+         * and sorts chronologically.
          */
-        async function initChat() {
-            let rawText = FALLBACK_CHAT_TEXT;
-            try {
-                const res = await fetch(REMOTE_CHAT_URL, { cache: 'no-store' });
-                if (res.ok) {
-                    const fetched = await res.text();
-                    if (fetched && fetched.trim().length > 0) {
-                        rawText = fetched;
-                    }
+        function loadAndMergeTexts(textList) {
+            let combined = [];
+            textList.forEach((raw, idx) => {
+                if (raw && raw.trim()) {
+                    combined = combined.concat(parseWhatsAppText(raw, idx));
                 }
-            } catch (_) {
-                // Silent fallback to built-in dummy chat
+            });
+
+            // Deduplicate identical messages when overlapping exports are merged
+            const seen = new Set();
+            const unique = [];
+            for (const msg of combined) {
+                const sig = `${msg.date}|${msg.time}|${msg.sender}|${msg.text.trim()}`;
+                if (!seen.has(sig)) {
+                    seen.add(sig);
+                    unique.push(msg);
+                }
             }
 
-            messages = parseWhatsAppText(rawText);
+            // Sort chronologically while preserving intra-minute message order
+            unique.sort((a, b) => {
+                if (a.timestamp !== b.timestamp) return a.timestamp - b.timestamp;
+                if (a.sourceOrder !== b.sourceOrder) return a.sourceOrder - b.sourceOrder;
+                return a.seq - b.seq;
+            });
+
+            messages = unique;
             const senders = [...new Set(messages.filter(m => !m.isSystem).map(m => m.sender))];
             participants = senders.length > 0 ? senders : ['avirup', 'Viruss'];
-            currentUser = participants.find(p => p.toLowerCase() === 'avirup') || participants[0];
+            currentUser = participants.find(p => p.toLowerCase() === 'avirup' || p.toLowerCase() === 'avi') || participants[0];
 
             updateHeaderContact();
             renderMessages(true);
+        }
+
+        /**
+         * Checks both the local folder (./chat.txt, ./chat1.txt, ./chat2.txt...)
+         * and remote GitHub folder, then merges all found files seamlessly.
+         */
+        async function fetchTextIfValid(url) {
+            try {
+                const res = await fetch(url, { cache: 'no-store' });
+                if (!res.ok) return null;
+                const text = await res.text();
+                // Ignore HTML 404 fallback pages if a static server returns index.html
+                if (!text || text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
+                    return null;
+                }
+                return text;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        async function initChat() {
+            const localUrls = CANDIDATE_FILES.map(name => `./${name}`);
+            const remoteUrls = CANDIDATE_FILES.map(name => `${REMOTE_BASE_URL}${name}`);
+
+            const localResults = await Promise.all(localUrls.map(fetchTextIfValid));
+            const validLocal = localResults.filter(Boolean);
+
+            let validTexts = validLocal;
+            if (validTexts.length === 0) {
+                const remoteResults = await Promise.all(remoteUrls.map(fetchTextIfValid));
+                validTexts = remoteResults.filter(Boolean);
+            }
+
+            if (validTexts.length === 0) {
+                validTexts = [FALLBACK_CHAT_TEXT];
+            }
+
+            loadAndMergeTexts(validTexts);
         }
 
         window.addEventListener('DOMContentLoaded', initChat);
